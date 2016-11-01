@@ -1,9 +1,7 @@
 import stream
 import sys
-from memory_profiler import profile
 
 
-@profile
 def distinct_words_count(stream_file):
     words = set()
     for (bow, doc_id) in stream.bow_stream(stream_file):

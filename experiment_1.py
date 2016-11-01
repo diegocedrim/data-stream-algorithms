@@ -13,7 +13,6 @@ exact_result = de.distinct_words_count(stream_file)
 print "\nExact result:", exact_result
 print "Exact method execution time:", datetime.now() - start
 
-
 print "Executing the approximated method..."
 start = datetime.now()
 countByHashes = da.distinct_words_count(100, stream_file)

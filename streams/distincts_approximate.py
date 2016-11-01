@@ -2,11 +2,10 @@ from sympy.ntheory import isprime
 from random import randint
 import stream
 import numpy as np
-from memory_profiler import profile
 import sys
 
 
-def calculate_M(initial=10266000):
+def calculate_M(initial):
     m = initial
     while not isprime(m):
         m += 1
@@ -40,11 +39,11 @@ def median(lst):
     return np.median(np.array(lst))
 
 
-@profile
-def distinct_words_count(n_hashes, stream_file):
-    M = calculate_M()
+def distinct_words_count(n_hashes, stream_file, universe_set_size=10266000):
+    M = calculate_M(universe_set_size)
     min_values = compute_min_values(n_hashes, M, stream_file)
-    estimated_count = [M/i for i in min_values]
+    print "Min Values:", min_values
+    estimated_count = [M/i for i in min_values if i != 0]
     count_by_nhashes = {}
     for i in xrange(1, n_hashes + 1):
         e = estimated_count[:i]
