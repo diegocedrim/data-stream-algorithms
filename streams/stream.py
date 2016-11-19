@@ -1,3 +1,5 @@
+import re
+
 def bow_stream(filename):
     """
         Yields dictionaries representing bag of words with the format
@@ -42,3 +44,24 @@ def word_stream(filename):
         for line in docs:
             doc_id, word_id, count = [int(i) for i in line.split()]
             yield word_id
+
+
+def alphanumeric_word_stream(filename):
+    pattern = ".*?([a-z0-9]+).*"
+    compiled = re.compile(pattern, flags=re.IGNORECASE)
+    with open(filename) as stream:
+        count = 0
+        for line in stream:
+            words = line.strip().lower().split()
+            for word in words:
+                result = compiled.match(word)
+                if result:
+                    count += 1
+                    yield result.group(1), count
+
+
+
+# c = 0
+# for word in alphanumeric_word_stream("../data/Norvig.txt"):
+#     c += 1
+# print c

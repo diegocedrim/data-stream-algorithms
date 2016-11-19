@@ -20,31 +20,27 @@ class AmsAlgorithm:
 
     def start_stream(self):
         self.n = 0
-        for (bow, doc_id) in stream.bow_stream(self.stream_file):
-            sys.stdout.write("\rDocument: %s" % doc_id)
-            sys.stdout.flush()
-            for word_id in bow:
-                if word_id in self.variables:
-                    self.variables[word_id] += 1
-                else:
-                    self.__create_new_variable(word_id)
-                self.n += 1
-        print ""
+        for (word, count) in stream.alphanumeric_word_stream(self.stream_file):
+            if word in self.variables:
+                self.variables[word] += 1
+            else:
+                self.__create_new_variable(word)
+            self.n += 1
 
     def surprise_number(self):
         sum_values = 0.0
-        for word_id in self.variables:
-            sum_values += self.n * (2 * self.variables[word_id] - 1)  # Section 4.5.2
-        return sum_values / len(self.variables)
+        for word in self.variables:
+            sum_values += self.n * (2*self.variables[word] - 1)  # Section 4.5.2
+        return sum_values/len(self.variables)
 
-    def __create_new_variable(self, word_id):
+    def __create_new_variable(self, word):
         if len(self.variables) < self.n_variables:
-            self.variables[word_id] = 1
+            self.variables[word] = 1
             return
 
-        threshold = float(self.n_variables)/self.n + 1
-        should_create = random.random() > threshold  # Section 4.5.5
+        threshold = float(self.n_variables)/(self.n + 1)
+        should_create = random.random() <= threshold  # Section 4.5.5
         if should_create:
             to_remove = random.choice(self.variables.keys())
             del self.variables[to_remove]
-            self.variables[word_id] = 1
+            self.variables[word] = 1
